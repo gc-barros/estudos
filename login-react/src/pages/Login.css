@@ -1,0 +1,21 @@
+@import '../variables.css';
+
+.container-principal {
+  background: var(--color-background);
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-form__container {
+  background: var(--white);
+  width: 100%;
+  max-width: 760px;
+  margin: auto;
+  padding: 96px 98px 92px 98px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+}

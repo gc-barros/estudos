@@ -1,0 +1,18 @@
+/* Tipografia */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* Variáveis */
+:root {
+  /* Cores */
+  --color-primary: #7A5CFA;
+  --color-primary-hover: #917bf2;
+  --grey-1: #333333;
+  --grey-2: #CCCCCC;
+  --grey-3: #666666;
+  --white: #ffffff;
+  --color-background: #7A5CFA33;
+  --color-error: #EB5757;
+
+  /* Tipografia */
+  --font-family-primary: 'Noto Sans', sans-serif;
+}

@@ -1,0 +1,13 @@
+@import '../../variables.css';
+
+.form-btn__submit {
+  background: var(--color-primary);
+  color: var(--white);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.form-btn__submit:hover {
+  background: var(--color-primary-hover);
+  transition: .6s ease all;
+}

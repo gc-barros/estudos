@@ -1,0 +1,51 @@
+@import '../../variables.css';
+
+.form-group {
+  position: relative;
+}
+
+.form-group__label {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.form-group__input {
+  border: 1px solid var(--grey-2);
+  padding: 16px;
+  border-radius: 8px;
+  display: block;
+  width: 100%;
+  margin: 8px 0;
+  color: var(--grey-1);
+  font-size: 16px;
+  font-family: var(--font-family-primary);
+}
+
+.form-group__input::placeholder {
+  color: var(--grey-3);
+}
+
+.form-group__input.error, .form-group__input.error::placeholder {
+  border-color: var(--color-error);
+  color: var(--color-error);
+  padding-right: 50px;
+}
+
+.form-group:has(.form-group__input.error)::after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 51px;
+  right: 18px;
+  height: 20px;
+  width: 20px;
+  background-image: url(../../assets/alert.svg);
+}
+
+.form-group__message {
+  font-size: 12px;
+}
+
+.form-group__message.error {
+  color: var(--color-error);
+}
