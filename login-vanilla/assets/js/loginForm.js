@@ -43,6 +43,14 @@ let loginForm = {
 
       if (username == "admin" && password == "admin") {
         alert("Login successful!");
+        usernameInput.classList.remove("error");
+        passwordInput.classList.remove("error");
+        loginForm.setInputMessage("username-message","");
+        loginForm.setInputMessage(
+          "password-message",
+          "Your password is between 4 and 12 characters"
+        );
+        
       } else {
         loginForm.setInputMessage(
           "password-message",
