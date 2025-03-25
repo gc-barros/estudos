@@ -1,108 +1,95 @@
-let loginForm = {
-  init: () => {
-    loginForm.events();
+function loginFormInit() {
+  setInputValidaty("password", true, templateMessages.passwordLength)
 
-    loginForm.setInputMessage(
-      "password-message",
-      "Your password is between 4 and 12 characters"
-    );
-  },
-  fields: {
-    username: "",
-    password: "",
-  },
-  events: () => {
-    const form = document.getElementById("login-form");
-    const usernameInput = document.getElementById("username");
-    const passwordInput = document.getElementById("password");
+  const form = document.getElementById("login-form");
+  const usernameInput = document.getElementById("username");
+  const passwordInput = document.getElementById("password");
 
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
+  usernameInput.addEventListener("change", handleUsernameOnChange);
+  passwordInput.addEventListener("change", handlePasswordOnChange);
+  form.addEventListener("submit", (e) => handleOnSubmit(e, form));
+}
 
-      const { username, password } = loginForm.fields;
+const templateMessages = {
+  passwordLength: "Your password is between 4 and 12 characters",
+  requiredField: "This field cannot be empty. Please enter a value.",
+  incorrectCredentials: "Incorrect username or password. Please try again."
+}
 
-      if (!username) {
-        usernameInput.classList.add("error");
-        loginForm.setInputMessage(
-          "username-message",
-          "This field cannot be empty. Please enter a value.",
-          true
-        );
-      }
+function handleOnSubmit(e, form) {
+  e.preventDefault();
 
-      if (!password) {
-        passwordInput.classList.add("error");
-        loginForm.setInputMessage(
-          "password-message",
-          "This field cannot be empty. Please enter a value.",
-          true
-        );
-      }
+  const formData = new FormData(form)
 
-      if (!username || !password || !loginForm.validatePassword(password)) return
+  const dataIsValid = validateFormData(formData)
+  if (!dataIsValid) return
 
-      if (username == "admin" && password == "admin") {
-        alert("Login successful!");
-        usernameInput.classList.remove("error");
-        passwordInput.classList.remove("error");
-        loginForm.setInputMessage("username-message","");
-        loginForm.setInputMessage(
-          "password-message",
-          "Your password is between 4 and 12 characters"
-        );
-        
-      } else {
-        loginForm.setInputMessage(
-          "password-message",
-          "Incorrect username or password. Please try again.",
-          true
-        );
-        usernameInput.classList.add("error");
-        passwordInput.classList.add("error");
-      }
-    });
+  const credentialsAreValid = validateCredentials(formData)
 
-    usernameInput.addEventListener("change", (e) => {
-      usernameInput.classList.remove("error");
-      loginForm.fields.username = e.target.value?.trim();
-      loginForm.setInputMessage("username-message", "");
-    });
+  if (credentialsAreValid) {
+    alert("Login successful!");
+    setInputValidaty("username", true)
+    setInputValidaty("password", true, templateMessages.passwordLength)
+    
+  } else {
+    setInputValidaty("username", false)
+    setInputValidaty("password", false, templateMessages.incorrectCredentials)
+  }
+}
 
-    passwordInput.addEventListener("change", (e) => {
-      const passwordValue = e.target.value?.trim();
-      loginForm.fields.password = passwordValue;
-      const validPassword = loginForm.validatePassword(passwordValue);
+function handleUsernameOnChange(e) {
+  e.target.value = e.target.value.trim()
+  setInputValidaty("username", true, "")
+}
 
-      if (validPassword) {
-        passwordInput.classList.remove("error");
-        loginForm.setInputMessage(
-          "password-message",
-          "Your password is between 4 and 12 characters"
-        );
+function handlePasswordOnChange(e) {
+  e.target.value = e.target.value.trim()
+  const validPassword = validatePasswordLength(e.target.value);
+  setInputValidaty("password", validPassword, templateMessages.passwordLength)
+}
 
-      } else {
-        passwordInput.classList.add("error");
-        loginForm.setInputMessage(
-          "password-message",
-          "Your password is between 4 and 12 characters",
-          true
-        );
-      }
-    });
-  },
-  validatePassword: (password) => {
-    return password.length >= 4 && password.length <= 12;
-  },
-  setInputMessage: (fieldId, message, isError = false) => {
-    const field = document.getElementById(fieldId);
-    field.innerText = message;
+function validateFormData(formData) {
+  const username = formData.get("username")
+  const password = formData.get("password")
 
-    if (isError) {
-      field.classList.add("error");
-    } else {
-      field.classList.remove("error");
-    }
-  },
-};
+  if (!username) {
+    setInputValidaty("username", false, templateMessages.requiredField)
+  }
 
-export default loginForm;
+  if (!password) {
+    setInputValidaty("password", false, templateMessages.requiredField)
+  }
+
+  if (!validatePasswordLength) {
+    setInputValidaty("password", false, templateMessages.passwordLength)
+  }
+
+  return !(!username || !password || !validatePasswordLength(password))
+}
+
+function validatePasswordLength(password) {
+  return password.length >= 4 && password.length <= 12;
+}
+
+function validateCredentials(formData) {
+  const username = formData.get("username")
+  const password = formData.get("password")
+
+  return (username == "admin" && password == "admin")
+}
+
+function setInputValidaty(inputId, isValid, message = "") {
+  const input = document.getElementById(inputId);
+  const messageEl = document.getElementById(`${input.name}-message`);
+  messageEl.innerText = message;
+
+  if (!isValid) {
+    input.classList.add("error");
+    messageEl.classList.add("error");
+  } else {
+    input.classList.remove("error");
+    messageEl.classList.remove("error");
+  }
+}
+
+export default loginFormInit;

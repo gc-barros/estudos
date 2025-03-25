@@ -1,3 +1,3 @@
-import loginForm from "./loginForm.js";
+import loginFormInit from "./loginForm.js";
 
-loginForm.init();
+loginFormInit()
