@@ -5,9 +5,9 @@ function loginFormInit() {
   const usernameInput = document.getElementById("username");
   const passwordInput = document.getElementById("password");
 
-  usernameInput.addEventListener("change", handleUsernameOnChange);
-  passwordInput.addEventListener("change", handlePasswordOnChange);
-  form.addEventListener("submit", (e) => handleOnSubmit(e, form));
+  usernameInput.addEventListener("change", onChangeUsername);
+  passwordInput.addEventListener("change", onChangePassword);
+  form.addEventListener("submit", (event) => onSubmit(event, form));
 }
 
 const templateMessages = {
@@ -16,35 +16,35 @@ const templateMessages = {
   incorrectCredentials: "Incorrect username or password. Please try again."
 }
 
-function handleOnSubmit(e, form) {
-  e.preventDefault();
+function onSubmit(event, form) {
+  event.preventDefault();
 
   const formData = new FormData(form)
 
-  const dataIsValid = validateFormData(formData)
-  if (!dataIsValid) return
+  const isDataValid = validateFormData(formData)
+  if (!isDataValid) return
 
-  const credentialsAreValid = validateCredentials(formData)
+  const areCredentialsValid = validateCredentials(formData)
 
-  if (credentialsAreValid) {
-    alert("Login successful!");
-    setInputValidaty("username", true)
-    setInputValidaty("password", true, templateMessages.passwordLength)
-    
-  } else {
+  if (!areCredentialsValid) {
     setInputValidaty("username", false)
     setInputValidaty("password", false, templateMessages.incorrectCredentials)
+    return
   }
+
+  alert("Login successful!");
+  setInputValidaty("username", true)
+  setInputValidaty("password", true, templateMessages.passwordLength)
 }
 
-function handleUsernameOnChange(e) {
-  e.target.value = e.target.value.trim()
+function onChangeUsername(event) {
+  event.target.value = event.target.value.trim()
   setInputValidaty("username", true, "")
 }
 
-function handlePasswordOnChange(e) {
-  e.target.value = e.target.value.trim()
-  const validPassword = validatePasswordLength(e.target.value);
+function onChangePassword(event) {
+  event.target.value = event.target.value.trim()
+  const validPassword = validatePasswordLength(event.target.value);
   setInputValidaty("password", validPassword, templateMessages.passwordLength)
 }
 
@@ -86,10 +86,11 @@ function setInputValidaty(inputId, isValid, message = "") {
   if (!isValid) {
     input.classList.add("error");
     messageEl.classList.add("error");
-  } else {
-    input.classList.remove("error");
-    messageEl.classList.remove("error");
+    return
   }
+
+  input.classList.remove("error");
+  messageEl.classList.remove("error");
 }
 
 export default loginFormInit;
