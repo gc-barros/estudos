@@ -1,85 +1,80 @@
 import "./Form.css";
 import Input from "../Input/Input";
 import Button from "../Button/Button";
-import { useEffect, useState } from "react";
 import { errorsMessages } from "../../utils/templateMessages";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema, TLoginSchema } from "../../types/TLoginFormSchema";
+import { useEffect } from "react";
 
 const Form = () => {
-  const [username, setUsername] = useState<string>("");
-  const [usernameMsg, setUsernameMsg] = useState<string>("");
-  const [isValidUsername, setIsValidUsername] = useState<boolean>(true);
-  const [password, setPassword] = useState<string>("");
-  const [passwordMsg, setPasswordMsg] = useState<string>(errorsMessages.passwordLength);
-  const [isValidPassword, setIsValidPassword] = useState<boolean>(true);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+    setError,
+    setFocus
+  } = useForm<TLoginSchema>({resolver: zodResolver(loginSchema)});
 
   useEffect(() => {
-    if (!password) return
-    setIsValidPassword(password.length >= 4 && password.length <= 12)
-  }, [password]);
+    setFocus("username")
+  }, [setFocus])
 
-  const formSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const onSubmit = async (data: TLoginSchema) => {
+    console.log(data);
 
-    if (!username) {
-      setIsValidUsername(false)
-      setUsernameMsg(errorsMessages.requiredField)
-    }
+    await new Promise (resolve => setTimeout(resolve, 1000))
 
-    if (!password) {
-      setIsValidPassword(false)
-      setPasswordMsg(errorsMessages.requiredField)
-    }
-
-    if (!username || !password || !isValidPassword) return
-
-    const isCorrectUser = username == "admin" && password == "admin"
+    const isCorrectUser = data.username == "admin" && data.password == "admin"
 
     if (!isCorrectUser) {
-      setPasswordMsg(errorsMessages.incorrectCredentials)
-      setIsValidUsername(false)
-      setIsValidPassword(false)
+      setError("password", {
+        type: "incorrectCredentials",
+        message: errorsMessages.incorrectCredentials,
+      });
+      setError("username", {
+        type: "incorrectCredentials"
+      });
       return
     }
 
     alert("Login successful!");
+    reset();
   }
 
   return (
-    <form className="login-form" id="login-form" onSubmit={formSubmit}>
+    <form
+      className="login-form"
+      id="login-form"
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <h1>&#x1F44B; Welcome back!</h1>
       <div className="form-group">
         <Input
-          label="Username"
+          register={register}
+          label="username"
           placeholder="Enter username"
           inputType="text"
-          invalid={!isValidUsername}
-          message={usernameMsg}
-          value={username}
-          onChange={e => {
-            setUsername(e.target.value)
-            setUsernameMsg("")
-            setIsValidUsername(true)
-          }}
+          invalid={"username" in errors}
+          message={typeof errors.username?.message === "string" ? errors.username?.message : ""}
         />
       </div>
       <div className="form-group">
         <Input
-          label="Password"
+          register={register}
+          label="password"
           placeholder="Enter password"
           inputType="password"
-          invalid={!isValidPassword}
-          message={passwordMsg}
-          value={password}
-          onChange={e => {
-            setPassword(e.target.value)
-            setPasswordMsg(errorsMessages.passwordLength)
-          }}
+          invalid={"password" in errors}
+          message={typeof errors.password?.message === "string" ? errors.password?.message : errorsMessages.passwordLength}
         />
       </div>
       <Button
         type="submit"
+        disabled={isSubmitting}
       >
-        Login
+        {isSubmitting ? "Validating credentials..." : "Login"}
       </Button>
     </form>
   );

@@ -3,12 +3,13 @@ import './Button.css'
 type Props = {
   children: React.ReactNode;
   type: React.ButtonHTMLAttributes<HTMLButtonElement>["type"];
+  disabled: boolean | undefined;
   onClick?: () => void;
 }
 
-const Button = ({children, type, onClick}: Props) => {
+const Button = ({children, type, disabled, onClick}: Props) => {
   return (
-    <button className='form-btn__submit' type={type} onClick={onClick}>{children}</button>
+    <button className='form-btn__submit' type={type} onClick={onClick} disabled={disabled}>{children}</button>
   )
 }
 
