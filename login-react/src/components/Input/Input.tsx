@@ -1,12 +1,12 @@
 
 import { UseFormRegister, RegisterOptions, Path } from 'react-hook-form';
 import './Input.css'
-import ILoginFormValues from '../../types/ILoginFormValues';
+import { TLoginSchema } from '../../types/TLoginFormSchema';
 
 type Props = {
-  register: UseFormRegister<ILoginFormValues>;
-  registerOptions?: RegisterOptions<ILoginFormValues>;
-  label: Path<ILoginFormValues>;
+  register: UseFormRegister<TLoginSchema>;
+  registerOptions?: RegisterOptions<TLoginSchema>;
+  label: Path<TLoginSchema>;
   placeholder: string;
   inputType: React.HTMLInputTypeAttribute;
   message: string;

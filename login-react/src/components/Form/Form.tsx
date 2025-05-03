@@ -3,7 +3,9 @@ import Input from "../Input/Input";
 import Button from "../Button/Button";
 import { errorsMessages } from "../../utils/templateMessages";
 import { useForm } from "react-hook-form";
-import ILoginFormValues from "../../types/ILoginFormValues";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema, TLoginSchema } from "../../types/TLoginFormSchema";
+import { useEffect } from "react";
 
 const Form = () => {
   const {
@@ -11,10 +13,15 @@ const Form = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-    setError
-  } = useForm<ILoginFormValues>();
+    setError,
+    setFocus
+  } = useForm<TLoginSchema>({resolver: zodResolver(loginSchema)});
 
-  const formSubmit = async (data: ILoginFormValues) => {
+  useEffect(() => {
+    setFocus("username")
+  }, [setFocus])
+
+  const onSubmit = async (data: TLoginSchema) => {
     console.log(data);
 
     await new Promise (resolve => setTimeout(resolve, 1000))
@@ -40,13 +47,12 @@ const Form = () => {
     <form
       className="login-form"
       id="login-form"
-      onSubmit={handleSubmit(formSubmit)}
+      onSubmit={handleSubmit(onSubmit)}
     >
       <h1>&#x1F44B; Welcome back!</h1>
       <div className="form-group">
         <Input
           register={register}
-          registerOptions={{ required: errorsMessages.requiredField }}
           label="username"
           placeholder="Enter username"
           inputType="text"
@@ -57,23 +63,18 @@ const Form = () => {
       <div className="form-group">
         <Input
           register={register}
-          registerOptions={{
-            required: errorsMessages.requiredField,
-            minLength: { value: 4, message: errorsMessages.passwordLength },
-            maxLength: { value: 12, message: errorsMessages.passwordLength },
-          }}
           label="password"
           placeholder="Enter password"
           inputType="password"
           invalid={"password" in errors}
-          message={typeof errors.password?.message === "string" ? errors.password?.message : ""}
+          message={typeof errors.password?.message === "string" ? errors.password?.message : errorsMessages.passwordLength}
         />
       </div>
       <Button
         type="submit"
         disabled={isSubmitting}
       >
-        Login
+        {isSubmitting ? "Validating credentials..." : "Login"}
       </Button>
     </form>
   );
