@@ -9,12 +9,15 @@ const Form = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
+    reset,
     setError
   } = useForm<ILoginFormValues>();
 
-  const formSubmit = (data: ILoginFormValues) => {
+  const formSubmit = async (data: ILoginFormValues) => {
     console.log(data);
+
+    await new Promise (resolve => setTimeout(resolve, 1000))
 
     const isCorrectUser = data.username == "admin" && data.password == "admin"
 
@@ -30,6 +33,7 @@ const Form = () => {
     }
 
     alert("Login successful!");
+    reset();
   }
 
   return (
@@ -67,6 +71,7 @@ const Form = () => {
       </div>
       <Button
         type="submit"
+        disabled={isSubmitting}
       >
         Login
       </Button>
