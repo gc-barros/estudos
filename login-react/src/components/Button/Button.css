@@ -11,3 +11,8 @@
   background: var(--color-primary-hover);
   transition: .6s ease all;
 }
+
+.form-btn__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
