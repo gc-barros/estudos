@@ -1,35 +1,64 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import { Button } from "./components/ui/button";
+import { Input } from "./components/ui/input";
+import { Label } from "./components/ui/label";
+import { Textarea } from "./components/ui/textarea";
+import { toast, Toaster } from "sonner";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [error, setError] = useState(true);
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="min-h-screen flex justify-center items-center bg-white font-poppins">
+        <form className="w-[369px] border border-grey-1 p-6 rounded-lg shadow-sm" onSubmit={e => e.preventDefault()}>
+          <h1 className="text-2xl font-semibold text-text-primary">
+            Share your feedback
+          </h1>
+          <p className="text-text-secondary text-sm mt-1.5">
+            We would love to hear your thoughts.
+          </p>
+
+          <div className="my-6 space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="fullName">Full Name</Label>
+              <Input id="fullName" placeholder="Insert your full name" />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                placeholder="johndoe@sumitomo.com"
+                type="email"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="feedback">Feedback</Label>
+              <Textarea id="feedback" placeholder="Insert your feedback" />
+            </div>
+          </div>
+          <Button
+            className="w-full"
+            onClick={() =>
+              toast('Message sent!', {
+                description: 'Your message was successfully sent.'
+              })
+            }
+          >
+            Share feedback
+          </Button>
+        </form>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Toaster
+        toastOptions={{
+          classNames: {
+            toast: `!${error ? "bg-destructive" : "bg-success"} !text-white`,
+            description: "!text-white",
+          },
+        }}
+      />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
